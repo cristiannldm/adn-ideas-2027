@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ef1687">
+<title>ADN Ideas 2027</title>
+<style>
+:root{--pink:#ed1688;--coral:#ff5a68;--ink:#25202a}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink);background:#fff}
+.hero{min-height:270px;padding:42px 20px 76px;text-align:center;color:white;background:linear-gradient(120deg,rgba(238,23,134,.15),rgba(238,23,134,.2)),url("assets/fondo-adn.png") center/cover no-repeat}
+.logo{display:block;width:min(290px,78vw);max-height:130px;object-fit:contain;margin:0 auto 25px;filter:drop-shadow(0 2px 8px #9b174b35)}
+h1{font-size:clamp(29px,6vw,44px);line-height:1.05;margin:0 0 12px;font-weight:850;letter-spacing:-1.5px}
+.hero p{font-size:clamp(15px,2.5vw,18px);margin:0 auto;max-width:560px;line-height:1.55;font-weight:550}
+main{width:min(620px,calc(100% - 32px));margin:-42px auto 48px;position:relative}
+.panel{background:white;border-radius:22px;padding:clamp(22px,5vw,34px);box-shadow:0 16px 55px #3b16301a;border:1px solid #f4e8ef}
+.kicker{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#e51c82;font-weight:800;margin:0 0 10px}
+h2{font-size:25px;letter-spacing:-.7px;margin:0 0 8px}
+.help{font-size:14px;line-height:1.6;color:#756c75;margin:0 0 22px}
+label{display:block;font-size:14px;font-weight:750;margin-bottom:9px}
+textarea{display:block;width:100%;min-height:160px;resize:vertical;border:1.5px solid #eadde5;border-radius:14px;padding:15px;font:inherit;font-size:15px;line-height:1.55;outline:none;transition:.2s}
+textarea:focus{border-color:#ed1688;box-shadow:0 0 0 4px #ed168817}
+textarea::placeholder{color:#aaa0a8}
+button{width:100%;border:0;border-radius:999px;padding:15px 20px;margin-top:17px;background:linear-gradient(100deg,#ff645e,#ed1688);color:white;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 8px 20px #ed16883b}
+button:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+.note{text-align:center;color:#938792;font-size:12px;margin:15px 0 0}
+#feedback{display:none;margin-top:14px;padding:12px;border-radius:12px;background:#f1fbf5;color:#167344;font-size:14px;text-align:center}
+footer{text-align:center;color:#9b8c97;font-size:12px;padding:0 16px 28px}
+@media(max-width:480px){.hero{min-height:250px;padding-top:32px}.logo{max-height:105px}.panel{border-radius:18px}}
+</style>
+</head>
+<body>
+<header class="hero">
+  <img class="logo" src="assets/logo-adn.png" alt="ADN - Red de Adolescentes">
+  <h1>ADN IDEAS 2027</h1>
+  <p>Tus ideas son importantes para el equipo de comunicaciones.</p>
+</header>
+<main>
+  <section class="panel">
+    <p class="kicker">Tu espacio para proponer</p>
+    <h2>¿Qué idea te gustaría compartir?</h2>
+    <p class="help">Cuéntanos qué te gustaría ver en las comunicaciones de ADN durante el 2027. ¡Toda idea es bienvenida!</p>
+    <form id="ideaForm">
+      <label for="idea">Escribe tu idea</label>
+      <textarea id="idea" maxlength="3000" required placeholder="Me gustaría proponer..."></textarea>
+      <button id="send" type="submit" disabled>Enviar mi idea</button>
+      <p class="note">No necesitas colocar tu nombre. ¡Gracias por participar!</p>
+      <div id="feedback" role="status">¡Gracias! Tu idea quedó guardada en este dispositivo.</div>
+    </form>
+  </section>
+</main>
+<footer>ADN · Red de Adolescentes</footer>
+<script>
+const field=document.getElementById('idea'), send=document.getElementById('send'), form=document.getElementById('ideaForm'), feedback=document.getElementById('feedback');
+field.addEventListener('input',()=>send.disabled=!field.value.trim());
+form.addEventListener('submit',e=>{
+  e.preventDefault();
+  const idea=field.value.trim(); if(!idea)return;
+  const rows=JSON.parse(localStorage.getItem('adnIdeas2027')||'[]');
+  rows.push({id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),fecha:new Date().toISOString(),idea});
+  localStorage.setItem('adnIdeas2027',JSON.stringify(rows));
+  field.value='';send.disabled=true;feedback.style.display='block';
+});
+</script>
+</body></html>
