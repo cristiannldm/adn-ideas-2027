@@ -1,1 +1,51 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Repositorio ADN Ideas 2027</title><style>body{font-family:Arial,sans-serif;background:#fff5fa;color:#302532;padding:24px}main{max-width:850px;margin:auto;background:white;padding:25px;border-radius:18px}button{padding:12px 18px;border:0;border-radius:24px;background:#ed1688;color:white;font-weight:bold;cursor:pointer;margin:4px}.item{padding:14px;border:1px solid #f0dce8;border-radius:12px;margin:12px 0;white-space:pre-wrap}small{color:#8b7885}</style></head><body><main><h1>Repositorio de ideas · ADN 2027</h1><p>Vista local de las propuestas almacenadas en este navegador.</p><button onclick="load()">Actualizar</button><button onclick="csv()">Descargar CSV</button><div id="list"></div></main><script>function rows(){return JSON.parse(localStorage.getItem('adnIdeas2027')||'[]')}function load(){let l=document.getElementById('list'),a=rows();l.innerHTML='';if(!a.length){l.textContent='Aún no hay ideas guardadas en este navegador.';return}a.slice().reverse().forEach((r,i)=>{let d=document.createElement('div');d.className='item';let s=document.createElement('small');s.textContent='Idea '+(a.length-i)+' · '+new Date(r.fecha).toLocaleString('es');let p=document.createElement('p');p.textContent=r.idea;d.append(s,p);l.append(d)})}function csv(){let a=rows(),q=x=>'"'+String(x).replace(/"/g,'""')+'"',s=['ID,Fecha,Idea',...a.map(x=>[q(x.id),q(x.fecha),q(x.idea)].join(','))].join('\n'),u=URL.createObjectURL(new Blob(['\ufeff'+s],{type:'text/csv'})),z=document.createElement('a');z.href=u;z.download='ideas-adn-2027.csv';z.click();URL.revokeObjectURL(u)}load();</script></body></html>
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Repositorio ADN Ideas 2027</title>
+<style>
+body{font-family:Arial,sans-serif;background:#fff5fa;color:#302532;padding:24px}
+main{max-width:900px;margin:auto;background:white;padding:25px;border-radius:18px;box-shadow:0 12px 40px #4b17301a}
+button{padding:12px 18px;border:0;border-radius:24px;background:#ed1688;color:white;font-weight:bold;cursor:pointer;margin:4px}
+button:disabled{opacity:.45;cursor:not-allowed}
+.item{padding:14px;border:1px solid #f0dce8;border-radius:12px;margin:12px 0;white-space:pre-wrap}
+small{color:#8b7885}
+.notice{background:#fff3d9;border-radius:12px;padding:12px;line-height:1.5}
+</style>
+</head>
+<body>
+<main>
+<h1>Repositorio de ideas · ADN 2027</h1>
+<p>Consulta las propuestas guardadas en este navegador.</p>
+<p class="notice"><strong>Importante:</strong> esta versión todavía almacena las respuestas localmente en cada dispositivo. No reúne automáticamente las ideas enviadas desde otros celulares o computadoras.</p>
+<button onclick="load()">Actualizar</button>
+<button id="export" onclick="exportExcel()">Descargar en Excel (.xlsx)</button>
+<div id="list"></div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script>
+function rows(){try{return JSON.parse(localStorage.getItem('adnIdeas2027')||'[]')}catch(e){return[]}}
+function load(){
+ const l=document.getElementById('list'),a=rows();l.innerHTML='';
+ if(!a.length){l.textContent='Aún no hay ideas guardadas en este navegador.';return}
+ a.slice().reverse().forEach((r,i)=>{
+  const d=document.createElement('div');d.className='item';
+  const s=document.createElement('small');s.textContent='Idea '+(a.length-i)+' · '+new Date(r.fecha).toLocaleString('es');
+  const p=document.createElement('p');p.textContent=r.idea;d.append(s,p);l.append(d)
+ })
+}
+function exportExcel(){
+ const a=rows();
+ if(!a.length){alert('No hay ideas guardadas en este navegador para exportar.');return}
+ if(typeof XLSX==='undefined'){alert('No se pudo cargar el módulo de Excel. Verifica tu conexión e inténtalo nuevamente.');return}
+ const data=a.map((r,i)=>({'N.º':i+1,'Fecha de envío':new Date(r.fecha).toLocaleString('es'),'Idea propuesta':r.idea}));
+ const ws=XLSX.utils.json_to_sheet(data);
+ ws['!cols']=[{wch:8},{wch:24},{wch:80}];
+ const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Ideas ADN 2027');
+ XLSX.writeFile(wb,'Ideas_ADN_2027.xlsx')
+}
+load();
+</script>
+</body>
+</html>
